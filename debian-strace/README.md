@@ -96,3 +96,14 @@ http://packages.debian.org/squeeze/devscripts
 dd-list pretty-prints it
 http://manpages.ubuntu.com/manpages/natty/man1/dd-list.1.html
 
+Gah, HTTPS is rather difficult! (of course!)
+Would require a proxy approach to catch the arguments
+But we can still spot the HTTPS request to an IP Address
+<connect host="" port="" portProtocol="HTTP">
+  <resource>http://</resource>
+</connect>
+<open mode="read">file</file>
+???:
+
+depends on strace, python, python-lxml, file, sha1sum, ...
+
