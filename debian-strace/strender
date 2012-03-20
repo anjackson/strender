@@ -1,0 +1,4 @@
+#!/bin/sh
+#strace -f -e trace=connect,send,recv,open,read,write,mmap2 -s 1000 -o "./list-files.py" curl http://www.redhat.com/index.htm -o temp -s
+strace -f -e trace=connect,send,recv,open,read,write,mmap2 -s 1000 -o "out.log" curl http://www.redhat.com/index.htm -o temp -s
+./list-files.py < out.log
