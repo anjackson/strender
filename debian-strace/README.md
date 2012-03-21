@@ -1,4 +1,78 @@
+Strender
+========
 
+* Add debug mode so all commands and details are reported.
+* Capture PIDs as well as FIDs and trace process executions (fork,execve)
+* Pull in timing data.
+* Make a proper class for the data and write out as xml.
+* Move the primary script to python, and allow the command to be passed along the CLI.
+* Rename the list-files script to strender-trace-parser out.log time.out.log
+* Use proper temp files for those logs.
+
+HTTPS is rather difficult! (of course!)
+Would require a proxy approach to catch the arguments
+But we can still spot the HTTPS request to an IP Address
+
+How should it look?
+
+<trace pid="XXX">
+<execve>
+ <command></command>
+ <trace pid="XXX">
+ <connect host="" port="" portProtocol="HTTP">
+  <resource>http://</resource>
+ </connect>
+ <open mode="read"><file fromPackage="package">file.ext</file></open>
+ <file mode="READ" fromPackage="package">file.ext</file>
+ </trace>
+</execve>
+<time>
+</time>
+</trace>
+
+Process tree is not that exciting? The order of operation is probably fine? Hmmm. Maybe just separate them, but keep the PIDs so you can link it up if you like?
+
+<trace pid="XXX">
+ <process pid="XXX">
+  <execve pid="XXX" command=""/>
+  <times>
+  </times>
+ </process>
+
+ <connections>
+  <connect host="" port="" portProtocol="DNS" fromPid="pid"/>
+  <connect host="" port="" portProtocol="HTTP" fromPid="pid">
+   <resource>http://</resource>
+  </connect>
+ </connections>
+
+ <files>
+  <file mode="READ" fromPackage="package" fromPid="pid" type="" sha1="">file.ext</file>
+ </files>
+
+</trace>
+
+Aim is to understand all dependencies, process structure is of interest, but as a debug thing really.
+
+depends on strace, python, python-lxml, file, sha1sum, ...
+
+Link to package
+---------------
+dpkg -S /path/file
+
+dlocate /path/file (may be faster)
+
+http://collab-maint.alioth.debian.org/debtree/
+
+### To maintainer ###
+http://packages.debian.org/squeeze/devscripts
+
+dd-list pretty-prints it
+http://manpages.ubuntu.com/manpages/natty/man1/dd-list.1.html
+
+
+Notes
+=====
 
 strace, scripts
 
@@ -82,28 +156,4 @@ Maps Arial to Helvetica
 /var/lib/ghostscript/fonts/Fontmap
 Maps Helvetica to Nimbus and then Nimbus to Type1 font files.
 
-Link to package
----------------
-dpkg -S /path/file
-
-dlocate /path/file (may be faster)
-
-http://collab-maint.alioth.debian.org/debtree/
-
-### To maintainer ###
-http://packages.debian.org/squeeze/devscripts
-
-dd-list pretty-prints it
-http://manpages.ubuntu.com/manpages/natty/man1/dd-list.1.html
-
-Gah, HTTPS is rather difficult! (of course!)
-Would require a proxy approach to catch the arguments
-But we can still spot the HTTPS request to an IP Address
-<connect host="" port="" portProtocol="HTTP">
-  <resource>http://</resource>
-</connect>
-<open mode="read">file</file>
-???:
-
-depends on strace, python, python-lxml, file, sha1sum, ...
 
