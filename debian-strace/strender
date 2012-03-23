@@ -2,5 +2,5 @@
 #
 #strace -f -e trace=connect,send,recv,open,read,write,mmap2 -s 1000 -o "./list-files.py" curl http://www.redhat.com/index.htm -o temp -s
 #strace -f -e trace=connect,send,recv,open,read,write,mmap2,close -s 1000 -o "out.log" curl http://www.redhat.com/index.htm -o temp -s
-strace -f -e trace=all -s 1000 -o "out.log" time -o "time.out.log" `which curl` http://www.redhat.com/index.htm -o temp -s
+strace -f -e trace=all -s 1000 -o "out.log" time -v -o "time.out.log" `which curl` http://www.redhat.com/index.htm -o temp -s
 ./strender-trace-parser.py out.log time.out.log

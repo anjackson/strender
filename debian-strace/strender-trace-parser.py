@@ -101,7 +101,7 @@ def main():
   for item in filesread:
         sha1 = os.popen("sha1sum -b '"+item+"'",'r').read().rstrip().replace(" *"+item,"")
 	type = os.popen("file -b --mime-type '"+item+"'",'r').read().rstrip()
-	print "<open mode=\"?\" type=\""+type+"\" sha1=\""+sha1+"\">"+item+"</open>"
+	print "<file mode=\"?\" type=\""+type+"\" sha1=\""+sha1+"\">"+item+"</file>"
 	#print "SORTED, ",item, ", ",
 
 main()

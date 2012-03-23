@@ -9,30 +9,20 @@ Strender
 * Rename the list-files script to strender-trace-parser out.log time.out.log
 * Use proper temp files for those logs.
 
+Aim is to understand all dependencies, process structure is of interest, but as a debug thing really.
+
 HTTPS is rather difficult! (of course!)
 Would require a proxy approach to catch the arguments
 But we can still spot the HTTPS request to an IP Address
 
-How should it look?
+depends on strace, python, python-lxml, file, sha1sum, ...
 
+Example output:
+
+----
+<?xml ?>
 <trace pid="XXX">
-<execve>
- <command></command>
- <trace pid="XXX">
- <connect host="" port="" portProtocol="HTTP">
-  <resource>http://</resource>
- </connect>
- <open mode="read"><file fromPackage="package">file.ext</file></open>
- <file mode="READ" fromPackage="package">file.ext</file>
- </trace>
-</execve>
-<time>
-</time>
-</trace>
 
-Process tree is not that exciting? The order of operation is probably fine? Hmmm. Maybe just separate them, but keep the PIDs so you can link it up if you like?
-
-<trace pid="XXX">
  <process pid="XXX">
   <execve pid="XXX" command=""/>
   <times>
@@ -40,9 +30,9 @@ Process tree is not that exciting? The order of operation is probably fine? Hmmm
  </process>
 
  <connections>
-  <connect host="" port="" portProtocol="DNS" fromPid="pid"/>
+  <connect host="" port="" portProtocol="DNS" fromPid="pid" />
   <connect host="" port="" portProtocol="HTTP" fromPid="pid">
-   <resource>http://</resource>
+   <http method="GET" uri="http://" />
   </connect>
  </connections>
 
@@ -52,9 +42,8 @@ Process tree is not that exciting? The order of operation is probably fine? Hmmm
 
 </trace>
 
-Aim is to understand all dependencies, process structure is of interest, but as a debug thing really.
+----
 
-depends on strace, python, python-lxml, file, sha1sum, ...
 
 Link to package
 ---------------
