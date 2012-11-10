@@ -16,12 +16,12 @@ send_re = re.compile(r'^(\d+), "(.+)", (\d+), (\w+)$')
 #fcntl(10, F_SETFD, FD_CLOEXEC)    = 0
 # but this is not a Killar.
 
+
 def main():
   openfiles = dict()
   filesread = list()
-  #with open(sys.argv[1]) as f:
-  #with sys.stdin as f:
-  for line in sys.stdin:
+  with open(sys.argv[1]) as f:
+    for line in f:
       mo = linere.match(line)
       #print line,
       if mo is None:
@@ -30,9 +30,16 @@ def main():
       pid, command, args, results = mo.groups()
       if command == 'open':
         fn = args.split(',', 1)[0].strip('"').rstrip('0').rstrip('\\')
+	mode = args.split(',', 1)[1].strip()
         fd = int(results.split(' ', 1)[0])
-        openfiles[fd] = fn
-        #print "OPENED:",fn,fd
+        # Only remember successfully opened files
+        if fd != -1:
+          openfiles[fd] = fn
+        else:
+          print "INFO: Failed to open",fn,mode
+        #print "OPEN:",fn,":",mode,":",fd
+      elif command == 'pipe':
+        print "PIPE:",args
       elif command == 'read' or command == 'write':
         #if results != '0':
         fd = int(args.split(',', 1)[0],0) #.lstrip('0').lstrip('x')
@@ -50,6 +57,13 @@ def main():
               filesread.append(openfiles[fd])
           else:
 	    print "WARN: fd",fd,"not found! (mmap2)"
+      elif command == 'close':
+        #print "CLOSE:",args
+        fd = int(args.strip(),0)
+        if fd in openfiles:
+          del openfiles[fd]
+        else:
+          print "WARN: Closed unmonitored handle",fd
       elif command == 'connect':
         print "CONNECT:",args
         # sockfd, sockaddr, addrlen
@@ -76,14 +90,18 @@ def main():
       elif command == 'recv':
         #print "RECV:",args
         pass
+      elif command == 'execve':
+        print "EXECVE:",args,results
+        #pass
+
 
       else:
-        print "Unknown command %r" % command	
+        print "INFO: Unmonitored command: %r" % command
 
   for item in filesread:
         sha1 = os.popen("sha1sum -b '"+item+"'",'r').read().rstrip().replace(" *"+item,"")
 	type = os.popen("file -b --mime-type '"+item+"'",'r').read().rstrip()
-	print "<open mode=\"?\" type=\""+type+"\" sha1=\""+sha1+"\">"+item+"</open>"
+	print "<file mode=\"?\" type=\""+type+"\" sha1=\""+sha1+"\">"+item+"</file>"
 	#print "SORTED, ",item, ", ",
 
 main()
