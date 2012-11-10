@@ -1,0 +1,5 @@
+#!/bin/sh
+./urlender.js "$1" urls.txt screenshot.png > urlender-output.log 2>&1
+wget -q -i urls.txt -O tempname --warc-file="output"
+rm tempname
+
